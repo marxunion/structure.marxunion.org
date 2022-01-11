@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Структура Сююза Марксистов</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="assets/css/reset.css" />
+    <link rel="stylesheet" href="assets/css/dejavu/dejavu_sanscondensed.css" type="text/css" charset="utf-8" />
+
+    <style type="text/css"> 
+      html, body, #visualization {
+        height: 100%;
+        font-family: 'dejavu_sanscondensed', Arial, sans-serif;
+      }
+    </style>
+
+    <script src="assets/js/webfont-1.4.7.js"></script>
+    <script src="assets/carrotsearch.circles.js"></script>
+    <script src="assets/carrotsearch.circles.asserts.js"></script>
+    <script src="assets/js/carrotsearch.examples.onresizehook.js"></script>
+    <script src="assets/js/carrotsearch.examples.viewport.js"></script>
+    <script src="https://nc.marxunion.org/s/JZqKKrnYRy65zGB/download/structure.js"></script>
+  </head>
+
+  <body>
+    <div id="visualization"></div>
+
+    <script>
+      /* Iterate over all groups in a model. */
+      function forAllGroups(group, fn) {
+        fn(group);
+        if (group.groups) {
+          for (var i = 0; i < group.groups.length; i++) {
+            forAllGroups(group.groups[i], fn);
+          }
+        }
+        return group;
+      }
+      
+      /* Invoke a group's callback handler if any. */
+      function clickOn(id, model) {
+        var match;
+        if (!model) model = circles.get("dataObject");
+        forAllGroups(model, function(group) {
+          if (group.id === id) {
+            match = group;
+          }
+        });
+        if (match.onClick) match.onClick.call(match);
+      }
+
+      /* Assign unique ID to each group in a model and create pointers to parent groups. */
+      function assignIds(model) {
+        var id = 0;
+        return forAllGroups(model, function(group) {
+          if (group.id === undefined) group.id = id++;
+          if (group.groups) {
+            for (var i = 0; i < group.groups.length; i++) {
+              group.groups[i].parent = group;
+            }
+          }
+        });
+      }
+
+      window.onload = function() {
+        // Use the defaults for all parameters.
+        var circles = new CarrotSearchCircles({
+          id: "visualization",
+          pixelRatio: Math.min(1.5, window.devicePixelRatio || 1),
+          
+          groupFontFamily: "dejavu_sanscondensed, Arial, sans-serif",
+          groupMinFontSize: 20,
+          groupMaxFontSize: 30,
+
+          titleBar: "inscribed",
+          titleBarTextColor: "#444",
+          titleBarFontFamily: "dejavu_sanscondensed, Arial, sans-serif",
+          titleBarMinFontSize: 10,
+          titleBarMaxFontSize: 30,
+
+          titleBarLabelDecorator: function(attrs) { 
+            attrs.label = "Центральный совет";
+          },
+        });
+        
+        window.circles = circles;
+        var model = assignIds(SM_structure);
+        circles.set({
+          onGroupClick: function(e) { clickOn(e.group.id); },
+          dataObject: model
+        });
+
+        installResizeHandlerFor(circles, 0);
+        
+        WebFont.load({
+          custom: {
+            families: ['dejavu_sanscondensed']
+          }
+        });        
+      };
+    </script>
+  </body>
+</html>
