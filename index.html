@@ -93,9 +93,9 @@
         }
 
         if (group) {
-          $("#titlebar").addClass("shown").text(group.full);
+          document.getElementById("titlebar").classList.add("shown").text(group.full);
         } else {
-          $("#titlebar").removeClass("shown");
+          document.getElementById("titlebar").classList.remove("shown");
         }
       };
 
