@@ -12,26 +12,23 @@
         font-family: 'dejavu_sanscondensed', Arial, sans-serif;
       }
 
+      #visualization {
+        position: absolute;
+        left: 0px;
+        right: 50%;
+        top: 0px;
+        bottom: 0px;
+      }
+
       #titlebar {
         position: fixed;
         top:    20px;
         width:  50%;
-        left:  -50%;
-
-        background-color: rgba(0,0,0,0.2);
-        color: white;
+        right:  0px;
+        color: black;
         font-family: sans-serif;
-        font-size: 40px;
+        font-size: 30px;
         padding: 20px;
-
-        -webkit-transition: left 1s ease, right 1s ease;
-           -moz-transition: left 1s ease, right 1s ease;
-             -o-transition: left 1s ease, right 1s ease;
-                transition: left 1s ease, right 1s ease;
-      }
-
-      #titlebar.shown {
-        left: 0px;
       }
     </style>
 
@@ -45,7 +42,7 @@
 
   <body>
     <div id="visualization"></div>
-    <div id="titlebar">Title bar</div>
+    <div id="titlebar">Наведите курсор на интересующий элемент, чтобы узнать о нем больше</div>
 
     <script>
       /* Iterate over all groups in a model. */
@@ -91,11 +88,12 @@
             group = selection[0];
           }
         }
-
-        if (group) {
-          document.getElementById("titlebar").classList.add("shown").text(group.full);
+        el = document.getElementById("titlebar");
+        if (group && group.full) {
+          el.classList.add("shown");
+          el.innerHTML = group.full;
         } else {
-          document.getElementById("titlebar").classList.remove("shown");
+          el.classList.remove("shown");
         }
       };
 
@@ -104,6 +102,7 @@
         var circles = new CarrotSearchCircles({
           id: "visualization",
           pixelRatio: Math.min(1.5, window.devicePixelRatio || 1),
+          ringScaling: 1,
           
           groupFontFamily: "dejavu_sanscondensed, Arial, sans-serif",
           groupMinFontSize: 20,
