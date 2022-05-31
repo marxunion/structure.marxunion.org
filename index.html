@@ -11,6 +11,28 @@
         height: 100%;
         font-family: 'dejavu_sanscondensed', Arial, sans-serif;
       }
+
+      #titlebar {
+        position: fixed;
+        top:    20px;
+        width:  50%;
+        left:  -50%;
+
+        background-color: rgba(0,0,0,0.2);
+        color: white;
+        font-family: sans-serif;
+        font-size: 40px;
+        padding: 20px;
+
+        -webkit-transition: left 1s ease, right 1s ease;
+           -moz-transition: left 1s ease, right 1s ease;
+             -o-transition: left 1s ease, right 1s ease;
+                transition: left 1s ease, right 1s ease;
+      }
+
+      #titlebar.shown {
+        left: 0px;
+      }
     </style>
 
     <script src="assets/js/webfont-1.4.7.js"></script>
@@ -23,6 +45,7 @@
 
   <body>
     <div id="visualization"></div>
+    <div id="titlebar">Title bar</div>
 
     <script>
       /* Iterate over all groups in a model. */
@@ -60,6 +83,36 @@
           }
         });
       }
+
+      var labelUpdate = function(group) {
+        if (!group) {
+          var selection = circles.get("selection").groups;
+          if (selection.length > 0) {
+            group = selection[0];
+          }
+        }
+
+        if (group) {
+          $("#titlebar").addClass("shown").text(group.full);
+        } else {
+          $("#titlebar").removeClass("shown");
+        }
+      };
+
+      // An example of appending an onGroupHover listener to any existing callbacks (none here, obviously).
+      circles.set("onGroupHover", circles.get("onGroupHover").concat([
+        function(evt) {
+          labelUpdate(evt.group);
+        }
+      ]));
+
+      // We will update on selection too because hovering is not supported
+      // on ipads, for example.
+      circles.set("onGroupSelectionChanged", circles.get("onGroupSelectionChanged").concat([
+          function() {
+            labelUpdate();
+          }
+      ]));
 
       window.onload = function() {
         // Use the defaults for all parameters.
