@@ -99,21 +99,6 @@
         }
       };
 
-      // An example of appending an onGroupHover listener to any existing callbacks (none here, obviously).
-      circles.set("onGroupHover", circles.get("onGroupHover").concat([
-        function(evt) {
-          labelUpdate(evt.group);
-        }
-      ]));
-
-      // We will update on selection too because hovering is not supported
-      // on ipads, for example.
-      circles.set("onGroupSelectionChanged", circles.get("onGroupSelectionChanged").concat([
-          function() {
-            labelUpdate();
-          }
-      ]));
-
       window.onload = function() {
         // Use the defaults for all parameters.
         var circles = new CarrotSearchCircles({
@@ -137,10 +122,26 @@
         
         window.circles = circles;
         var model = assignIds(SM_structure);
+
         circles.set({
           onGroupClick: function(e) { clickOn(e.group.id); },
           dataObject: model
         });
+
+        // An example of appending an onGroupHover listener to any existing callbacks (none here, obviously).
+        circles.set("onGroupHover", circles.get("onGroupHover").concat([
+          function(evt) {
+            labelUpdate(evt.group);
+          }
+        ]));
+
+        // We will update on selection too because hovering is not supported
+        // on ipads, for example.
+        circles.set("onGroupSelectionChanged", circles.get("onGroupSelectionChanged").concat([
+          function() {
+            labelUpdate();
+          }
+        ]));
 
         installResizeHandlerFor(circles, 0);
         
